@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.archura</groupId>
+    <artifactId>archura-platform-pre-filter-multi-tenant</artifactId>
+    <version>0.0.1</version>
+    <name>archura-platform-pre-filter-multi-tenant</name>
+
+    <properties>
+        <java.version>17</java.version>
+        <compiler.source>17</compiler.source>
+        <compiler.target>17</compiler.target>
+        <archura-platform-api.version>0.0.4</archura-platform-api.version>
+    </properties>
+
+    <dependencies>
+        <!-- PACK WITH -->
+
+        <!-- PROVIDED -->
+        <dependency>
+            <groupId>io.archura</groupId>
+            <artifactId>archura-platform-api</artifactId>
+            <version>${archura-platform-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- TEST -->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <source>${compiler.source}</source>
+                    <target>${compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>io.archura.platform.imperativeshell.global.pre.filter.MultiTenant</mainClass>
+                                </transformer>
+                            </transformers>
+                            <finalName>io.archura.platform.imperativeshell.global.pre.filter.MultiTenant-0.0.1</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <copy todir="${basedir}/../archura-platform-config-example/jars/">
+                                    <fileset dir="${basedir}/target/" includes="*.jar"/>
+                                </copy>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
